@@ -8,12 +8,7 @@ const Header = () => {
         </h1>
   
         {/* Navigation links aligned to the right */}
-        <nav className="space-x-6 text-sm font-medium text-gray-700">
-          <a href="/" className="hover:text-blue-600"></a>
-          <a href="/routes" className="hover:text-blue-600"></a>
-          <a href="/about" className="hover:text-blue-600"></a>
-          <a href="/contact" className="hover:text-blue-600"></a>
-        </nav>
+        
       </header>
     );
   };
