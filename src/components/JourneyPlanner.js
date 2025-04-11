@@ -26,7 +26,7 @@ const JourneyPlanner = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
-    fetch('https://routeback.onrender.com/api/v1/routes')
+    fetch('http://localhost:3000/api/v1/routes')
       .then((res) => res.json())
       .then((data) => {
         if (data && Array.isArray(data)) {
@@ -50,7 +50,7 @@ const JourneyPlanner = () => {
     setError('');
     setFormSubmitted(true);
 
-    fetch('https://routeback.onrender.com/api/v1/journey_planner', {
+    fetch('http://localhost:3000/api/v1/journey_planner', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
