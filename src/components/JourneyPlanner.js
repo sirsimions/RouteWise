@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 
 const JourneyPlanner = () => {
@@ -24,6 +25,7 @@ const JourneyPlanner = () => {
   const [totalTimeUsed, setTotalTimeUsed] = useState(0);
   const [error, setError] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loadingRoutes, setLoadingRoutes] = useState(true); // Loading routes state
 
   useEffect(() => {
     fetch('https://routeback.onrender.com/api/v1/routes')
@@ -38,7 +40,8 @@ const JourneyPlanner = () => {
       .catch((err) => {
         console.error('Error fetching routes:', err);
         setError('Failed to load routes');
-      });
+      })
+      .finally(() => setLoadingRoutes(false)); // Spinner ends after fetching
   }, []);
 
   const handleSubmit = () => {
@@ -78,6 +81,15 @@ const JourneyPlanner = () => {
         setError('An error occurred while generating the journey plan.');
       });
   };
+
+  if (loadingRoutes) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '100px' }}>
+        <CircularProgress />
+        <p>Loading routes...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '10px' }}>
@@ -164,7 +176,7 @@ const JourneyPlanner = () => {
                 <strong>Total Distance:</strong> {totalDistance.toFixed(1)} km
               </Typography>
               <Typography variant="subtitle1">
-                <strong>Drive Time:</strong> {Math.ceil(totalTimeUsed / 60)} hours
+                <strong>Total Time:</strong> {Math.ceil(totalTimeUsed / 60)} hours
               </Typography>
             </CardContent>
           </Card>
