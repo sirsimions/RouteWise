@@ -164,7 +164,7 @@ const JourneyPlanner = () => {
                 <strong>Total Distance:</strong> {totalDistance.toFixed(1)} km
               </Typography>
               <Typography variant="subtitle1">
-                <strong>Total Time:</strong> {Math.ceil(totalTimeUsed / 60)} hours
+                <strong>Drive Time:</strong> {Math.ceil(totalTimeUsed / 60)} hours
               </Typography>
             </CardContent>
           </Card>
