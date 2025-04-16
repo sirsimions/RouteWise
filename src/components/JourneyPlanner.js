@@ -25,7 +25,8 @@ const JourneyPlanner = () => {
   const [totalTimeUsed, setTotalTimeUsed] = useState(0);
   const [error, setError] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [loadingRoutes, setLoadingRoutes] = useState(true); // Loading routes state
+  const [loadingRoutes, setLoadingRoutes] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false); // New state for spinner
 
   useEffect(() => {
     fetch('https://routeback.onrender.com/api/v1/routes')
@@ -41,7 +42,7 @@ const JourneyPlanner = () => {
         console.error('Error fetching routes:', err);
         setError('Failed to load routes');
       })
-      .finally(() => setLoadingRoutes(false)); // Spinner ends after fetching
+      .finally(() => setLoadingRoutes(false));
   }, []);
 
   const handleSubmit = () => {
@@ -51,7 +52,8 @@ const JourneyPlanner = () => {
     }
 
     setError('');
-    setFormSubmitted(true);
+    setFormSubmitted(false);
+    setIsGenerating(true);
 
     fetch('https://routeback.onrender.com/api/v1/journey_planner', {
       method: 'POST',
@@ -72,6 +74,7 @@ const JourneyPlanner = () => {
 
           setTotalDistance(distance);
           setTotalTimeUsed(time);
+          setFormSubmitted(true);
         } else {
           setError('Journey plan error: ' + (data.error || 'Unknown error'));
         }
@@ -79,7 +82,8 @@ const JourneyPlanner = () => {
       .catch((err) => {
         console.error('Error generating journey plan:', err);
         setError('An error occurred while generating the journey plan.');
-      });
+      })
+      .finally(() => setIsGenerating(false));
   };
 
   if (loadingRoutes) {
@@ -157,9 +161,14 @@ const JourneyPlanner = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                style={{ marginTop: '8px', width: '100%' }}
+                style={{ marginTop: '8px', width: '100%', height: '40px' }}
+                disabled={isGenerating}
               >
-                Generate Journey Plan
+                {isGenerating ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  'Generate Journey Plan'
+                )}
               </Button>
             </div>
           </form>
@@ -202,10 +211,7 @@ const JourneyPlanner = () => {
                     </TableHead>
                     <TableBody>
                       {journeyPlan.map((step, index) => (
-                        <TableRow
-                          key={index}
-                          style={{ backgroundColor: index % 2 === 0 ? '#fafafa' : 'white' }}
-                        >
+                        <TableRow key={index} style={{ backgroundColor: index % 2 === 0 ? '#fafafa' : 'white' }}>
                           <TableCell style={cellBodyStyle}>{step.start_location}</TableCell>
                           <TableCell style={cellBodyStyle}>{step.stop_location}</TableCell>
                           <TableCell style={cellBodyStyle}>{step.start_time}</TableCell>
